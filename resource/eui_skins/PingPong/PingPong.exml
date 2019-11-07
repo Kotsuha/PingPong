@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="PingPongSkin" width="400" height="300" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" >
+	<w:Config id="16e450e060d" ></w:Config>
+	<ns1:Ball width="20" height="20" x="190" y="140"/>
+</e:Skin>
