@@ -40,7 +40,30 @@ class PingPong extends eui.Component implements  eui.UIComponent {
 
 	protected running():void // 一直跑一直跑
 	{
-		this.ball.move();
+		// Ball
+		this.ball.x += this.ball.vx;
+		this.ball.y += this.ball.vy;
+
+		if (this.ball.x + this.ball.radius >= this.width)
+		{
+			this.ball.x = this.width - this.ball.radius;
+			this.ball.vx *= -1;
+		}
+		else if (this.ball.x - this.ball.radius <= 0)
+		{
+			this.ball.x = 0 + this.ball.radius;
+			this.ball.vx *= -1;
+		}
+		if (this.ball.y + this.ball.radius >= this.height)
+		{
+			this.ball.y = this.height - this.ball.radius;
+			this.ball.vy *= -1;
+		}
+		else if (this.ball.y - this.ball.radius <= 0)
+		{
+			this.ball.y = 0 + this.ball.radius;
+			this.ball.vy *= -1;
+		}
 	}
 	
 }
