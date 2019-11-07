@@ -1,4 +1,4 @@
-class Ball extends eui.Component implements  eui.UIComponent {
+class Ball extends eui.Component implements eui.UIComponent {
 	public constructor() {
 		super();
 	}

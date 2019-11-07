@@ -159,10 +159,10 @@ class Main extends eui.UILayer {
 
         // ---------------------------------------------------------------------
 
-        let ball = new Ball();
-        this.addChild(ball);
-        ball.x = 200;
-        ball.y = 200;
+        let pp = new PingPong();
+        this.addChild(pp);
+        // pp.x = 200;
+        // pp.y = 200;
     }
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
