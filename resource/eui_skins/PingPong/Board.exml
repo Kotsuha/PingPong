@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="BoardSkin" width="100" height="10" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" >
+	<w:Config id="16e45872d7e" ></w:Config>
+	<e:Image width="100" height="10" source="pingpong_board_png" anchorOffsetX="50" anchorOffsetY="5" horizontalCenter="0" verticalCenter="0"/>
+</e:Skin>
