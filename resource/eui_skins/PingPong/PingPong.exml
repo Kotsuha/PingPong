@@ -3,4 +3,5 @@
 	<w:Config id="16e450e060d" ></w:Config>
 	<e:Image width="400" height="300" x="0" y="0" source="pingpong_bg_png"/>
 	<ns1:Ball id="ball" width="20" height="20" x="200" y="150" anchorOffsetX="10" anchorOffsetY="10"/>
+	<ns1:Board id="board" width="100" height="10" y="250" x="200" anchorOffsetX="50" anchorOffsetY="5"/>
 </e:Skin>
