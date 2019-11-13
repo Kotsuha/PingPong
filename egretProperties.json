@@ -28,6 +28,10 @@
     {
       "name": "egretmgobe",
       "path": "./libs/egretmgobe"
+    },
+    {
+      "name": "p2",
+      "path": "./libs/p2"
     }
   ]
 }
