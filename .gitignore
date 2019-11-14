@@ -1,5 +1,6 @@
+/.wing/exml.json
 /bin-debug
 /libs/exml.e.d.ts
+/libs/modules/*
 /manifest.json
 /template/*
-/libs/modules/*
