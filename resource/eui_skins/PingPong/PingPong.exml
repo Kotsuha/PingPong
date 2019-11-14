@@ -4,4 +4,8 @@
 	<e:Image width="500" height="500" x="0" y="0" source="pingpong-1px-black_png"/>
 	<ns1:Ball id="ball" width="20" height="20" anchorOffsetX="10" anchorOffsetY="10" x="250" y="250"/>
 	<ns1:Board id="board" width="100" height="10" anchorOffsetX="50" anchorOffsetY="5" y="400" x="250"/>
+	<ns1:Wall id="bottomWall" width="480" height="10" anchorOffsetX="240" anchorOffsetY="5" bottom="0" horizontalCenter="0"/>
+	<ns1:Wall id="rightWall" width="10" height="480" anchorOffsetX="5" anchorOffsetY="240" right="0" verticalCenter="0"/>
+	<ns1:Wall id="leftWall" width="10" height="480" anchorOffsetX="5" anchorOffsetY="240" left="0" verticalCenter="0"/>
+	<ns1:Wall width="480" height="10" anchorOffsetY="5" anchorOffsetX="240" top="0" horizontalCenter="0"/>
 </e:Skin>
