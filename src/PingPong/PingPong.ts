@@ -28,7 +28,7 @@ class PingPong extends eui.Component implements  eui.UIComponent {
 			this.onEnterFrame,
 			this
 		);
-		this.ball.setVelocity(5, 5);
+		this.ball.setVelocity(3.5, -5.5);
 
 		this.addEventListener( // 因為是移動裝置的 touch，滑鼠的話要點著不放
 			egret.TouchEvent.TOUCH_MOVE,
