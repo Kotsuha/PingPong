@@ -1,7 +1,7 @@
 {
 	"groups": [
 		{
-			"keys": "checkbox_select_disabled_png,checkbox_select_down_png,checkbox_select_up_png,checkbox_unselect_png,selected_png,border_png,header_png,radiobutton_select_disabled_png,radiobutton_select_down_png,radiobutton_select_up_png,radiobutton_unselect_png,roundthumb_png,thumb_png,track_png,tracklight_png,handle_png,off_png,on_png,button_down_png,button_up_png,thumb_pb_png,track_pb_png,track_sb_png,bg_jpg,egret_icon_png,description_json,pingpong_ball_png,pingpong_board_png,pingpong-1px-black_png",
+			"keys": "checkbox_select_disabled_png,checkbox_select_down_png,checkbox_select_up_png,checkbox_unselect_png,selected_png,border_png,header_png,radiobutton_select_disabled_png,radiobutton_select_down_png,radiobutton_select_up_png,radiobutton_unselect_png,roundthumb_png,thumb_png,track_png,tracklight_png,handle_png,off_png,on_png,button_down_png,button_up_png,thumb_pb_png,track_pb_png,track_sb_png,bg_jpg,egret_icon_png,description_json,pingpong_ball_png,pingpong_board_png,pingpong-1px-black_png,pingpong-1px-white_png",
 			"name": "preload"
 		}
 	],
@@ -150,6 +150,11 @@
 			"url": "assets/PingPong/pingpong-1px-black.png",
 			"type": "image",
 			"name": "pingpong-1px-black_png"
+		},
+		{
+			"name": "pingpong-1px-white_png",
+			"type": "image",
+			"url": "assets/PingPong/pingpong-1px-white.png"
 		}
 	]
 }
