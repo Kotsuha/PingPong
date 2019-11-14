@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e:Skin class="PingPongSkin" width="720" height="720" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" >
+<e:Skin class="PingPongSkin" width="500" height="500" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" >
 	<w:Config id="16e450e060d" ></w:Config>
-	<e:Image width="720" height="720" x="0" y="0" source="pingpong-1px-black_png"/>
-	<ns1:Ball id="ball" width="20" height="20" anchorOffsetX="10" anchorOffsetY="10" horizontalCenter="0" verticalCenter="0"/>
-	<ns1:Board id="board" width="100" height="10" anchorOffsetX="50" anchorOffsetY="5" y="600" horizontalCenter="0"/>
+	<e:Image width="500" height="500" x="0" y="0" source="pingpong-1px-black_png"/>
+	<ns1:Ball id="ball" width="20" height="20" anchorOffsetX="10" anchorOffsetY="10" x="250" y="250"/>
+	<ns1:Board id="board" width="100" height="10" anchorOffsetX="50" anchorOffsetY="5" y="400" x="250"/>
 </e:Skin>
