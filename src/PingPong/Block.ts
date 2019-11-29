@@ -25,7 +25,7 @@ class Block extends eui.Component implements  eui.UIComponent {
 
 	protected init():void
 	{
-		console.log("!!!!!!!!!!", this);
+		
 	}
 
 

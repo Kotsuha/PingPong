@@ -16,7 +16,6 @@ class PingPong extends eui.Component implements eui.UIComponent {
 	// p2.js
 	protected world: p2.World;
 	protected p2BallBody: p2.Body;
-	protected p2BallShape: p2.Circle;
 	protected p2TopWallBody: p2.Body;
 	protected p2TopWallShape: p2.Box;
 	protected p2RightWallBody: p2.Body;
@@ -26,10 +25,11 @@ class PingPong extends eui.Component implements eui.UIComponent {
 	protected p2LeftWallBody: p2.Body;
 	protected p2LeftWallShape: p2.Box;
 	protected p2BoardBody: p2.Body;
-	protected p2BoardShape: p2.Box;
 	protected genericMaterial: p2.Material;
 	protected genericContactMaterial: p2.ContactMaterial;
 	protected p2BlockBodies: p2.Body[] = [];
+
+	protected concatBodies: p2.Body[] = new Array<p2.Body>();
 
 	public constructor() {
 		super();
@@ -53,7 +53,6 @@ class PingPong extends eui.Component implements eui.UIComponent {
 			this.onEnterFrame,
 			this
 		);
-		// this.ball.setVelocity(3.5, -5.5);
 
 		this.addEventListener( // 因為是移動裝置的 touch，滑鼠的話要點著不放
 			egret.TouchEvent.TOUCH_MOVE,
@@ -68,14 +67,33 @@ class PingPong extends eui.Component implements eui.UIComponent {
 
 	protected init_p2(): void {
 
-		// World
+		// Create p2 world
 		{
 			this.world = new p2.World({ gravity: [0, 9.82] });
 			this.world.applyDamping = false; // Thanks to William! 現在東西移動不會一直減速了
 			this.world.applyGravity = false;
+
+			this.world.on("beginContact", function(evt) {
+				const bodyA = evt.bodyA;
+				const bodyB = evt.bodyB;
+
+				let otherBody: p2.Body = null;
+
+				if (this.p2BlockBodies.indexOf(bodyA) != -1) {
+					otherBody = bodyA;
+				}
+				else if (this.p2BlockBodies.indexOf(bodyB) != -1) {
+					otherBody = bodyB;
+				}
+
+				if (otherBody != null) {
+					// let otherBody = (evt.bodyA === this.p2BoardBody ? this.bodyB : this.bodyA);
+					this.concatBodies.push(otherBody); // https://www.twblogs.net/a/5b7e9aca2b717767c6aabd37
+				}
+			}, this);
 		}
 
-		// Generic Material
+		// Create generic material to use in our breakout world
 		{
 			this.genericMaterial = new p2.Material();
 			this.genericContactMaterial = new p2.ContactMaterial(this.genericMaterial, this.genericMaterial, {
@@ -85,7 +103,7 @@ class PingPong extends eui.Component implements eui.UIComponent {
 			this.world.addContactMaterial(this.genericContactMaterial);
 		}
 
-		// Ball
+		// Create a ball
 		{
 			this.p2BallBody = new p2.Body({
 				mass: 1,
@@ -93,11 +111,11 @@ class PingPong extends eui.Component implements eui.UIComponent {
 				angularVelocity: 0, // 0.1
 				velocity: [0, 100]
 			});
-			this.p2BallShape = new p2.Circle({
+			const shape = new p2.Circle({
 				radius: this.ball.width / 2,
 			});
-			this.p2BallShape.material = this.genericMaterial;
-			this.p2BallBody.addShape(this.p2BallShape);
+			shape.material = this.genericMaterial;
+			this.p2BallBody.addShape(shape);
 			this.world.addBody(this.p2BallBody);
 		}
 
@@ -108,12 +126,12 @@ class PingPong extends eui.Component implements eui.UIComponent {
 				position: [this.board.x, this.board.y],
 			});
 			this.p2BoardBody.type = p2.Body.KINEMATIC;
-			this.p2BoardShape = new p2.Box({
+			const shape = new p2.Box({
 				width: this.board.width,
 				height: this.board.height
 			});
-			this.p2BoardShape.material = this.genericMaterial;
-			this.p2BoardBody.addShape(this.p2BoardShape);
+			shape.material = this.genericMaterial;
+			this.p2BoardBody.addShape(shape);
 			this.world.addBody(this.p2BoardBody);
 		}
 
@@ -244,7 +262,7 @@ class PingPong extends eui.Component implements eui.UIComponent {
 
 	protected onTouchMove(evt: egret.TouchEvent): void {
 		this.p2BoardBody.position[0] = evt.stageX;
-		console.log(evt.stageX);
+		// console.log(evt.stageX);
 		// this.p2board.x = evt.stageX;
 		// this.board.y = evt.stageY;
 	}
@@ -253,6 +271,17 @@ class PingPong extends eui.Component implements eui.UIComponent {
 	// 一直跑一直跑
 	protected running(): void {
 		this.world.step(1 / 15); // 先暫時用 1/60 吧，我猜大概是要用 deltaTime
+
+		if (this.concatBodies.length > 0) {
+			this.concatBodies.forEach((body: p2.Body) => {
+				this.world.removeBody(body); // 移除了以後它就不再受物理影響了
+
+				let index = this.p2BlockBodies.indexOf(body);
+				if (index != -1) {
+					this.p2BlockBodies[index] = null;
+				}
+			});
+		}
 
 		// Sync Egret rendering and p2.js calculated values
 
@@ -268,13 +297,16 @@ class PingPong extends eui.Component implements eui.UIComponent {
 
 		// 方塊
 		for (let i: number = 0; i < this.blocks.length; i++) {
-			let box = (this.p2BlockBodies[i].shapes[0] as p2.Box);
+			if (this.p2BlockBodies[i] == null) {
+				if (this.blocks[i] != null) {
+					this.blocks[i].visible = false;
+					// this.blocks[i].parent.removeChild(this.blocks[i]);
+					// this.blocks[i] = null;
+				}
+				continue;
+			}
 
-			// 這些東西如果不會一直變，就不用一直做了。如果位置不會變，應該也不用一直做。
-			// this.blocks[i].rect.width = box.width;
-			// this.blocks[i].rect.height = box.height;
-			// this.blocks[i].anchorOffsetX = this.blocks[i].width / 2;
-			// this.blocks[i].anchorOffsetY = this.blocks[i].height / 2;
+			let box = (this.p2BlockBodies[i].shapes[0] as p2.Box);
 
 			this.blocks[i].x = this.p2BlockBodies[i].position[0];
 			this.blocks[i].y = this.p2BlockBodies[i].position[1];
@@ -291,6 +323,8 @@ class PingPong extends eui.Component implements eui.UIComponent {
 		//     static BOX: number;
 		//     static CAPSULE: number;
 		//     static HEIGHTFIELD: number;
+
+		this.concatBodies = [];
 	}
 
 }
