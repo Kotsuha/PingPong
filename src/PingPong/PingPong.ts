@@ -1,4 +1,8 @@
-class PingPong extends eui.Component implements  eui.UIComponent {
+class PingPong extends eui.Component implements eui.UIComponent {
+
+	// Exml Objects
+
+	protected blockGroup: eui.Group;
 
 	// Component
 	protected ball: Ball;
@@ -7,6 +11,7 @@ class PingPong extends eui.Component implements  eui.UIComponent {
 	protected rightWall: Wall;
 	protected bottomWall: Wall;
 	protected leftWall: Wall;
+	protected blocks: Block[] = [];
 
 	// p2.js
 	protected world: p2.World;
@@ -24,27 +29,25 @@ class PingPong extends eui.Component implements  eui.UIComponent {
 	protected p2BoardShape: p2.Box;
 	protected genericMaterial: p2.Material;
 	protected genericContactMaterial: p2.ContactMaterial;
+	protected p2BlockBodies: p2.Body[] = [];
 
 	public constructor() {
 		super();
 	}
 
-	protected partAdded(partName:string,instance:any):void
-	{
-		super.partAdded(partName,instance);
+	protected partAdded(partName: string, instance: any): void {
+		super.partAdded(partName, instance);
 	}
 
 
-	protected childrenCreated():void
-	{
+	protected childrenCreated(): void {
 		super.childrenCreated();
 
 		this.init();
 	}
 
 
-	protected init():void
-	{
+	protected init(): void {
 		this.addEventListener(
 			egret.TouchEvent.ENTER_FRAME,
 			this.onEnterFrame,
@@ -59,10 +62,11 @@ class PingPong extends eui.Component implements  eui.UIComponent {
 		);
 
 		this.init_p2();
+		this.init_eui();
 	}
 
 
-	protected init_p2():void {
+	protected init_p2(): void {
 
 		// World
 		{
@@ -196,18 +200,49 @@ class PingPong extends eui.Component implements  eui.UIComponent {
 			// 	this.world.addBody(wall.p2Body);
 			// });
 		}
+
+		// Block
+		{
+			let blocks = this.blockGroup.$children;
+
+			for (let i = 0; i < this.blockGroup.$children.length; i++) {
+
+				let block = this.blockGroup.$children[i] as Block;
+				this.blocks.push(block);
+
+				const x = block.x;
+				const y = block.y;
+				const w = block.rect.width;
+				const h = block.rect.height;
+
+				let p2BlockBody = new p2.Body({
+					mass: 1,
+					position: [x, y]
+				});
+				p2BlockBody.type = p2.Body.STATIC;
+				let p2BlockShape = new p2.Box({
+					width: w,
+					height: h
+				});
+				p2BlockShape.material = this.genericMaterial;
+				p2BlockBody.addShape(p2BlockShape);
+				this.world.addBody(p2BlockBody);
+				this.p2BlockBodies.push(p2BlockBody);
+			}
+		}
+	}
+
+	protected init_eui() {
 	}
 
 
-	protected onEnterFrame():void
-	{
+	protected onEnterFrame(): void {
 		// 暫時找不到類似 C# Action 或 Event 的功能，先這樣。要改 ENTER_FRAME 做了啥事就改這邊。
 		this.running();
 	}
 
 
-	protected onTouchMove(evt:egret.TouchEvent):void
-	{
+	protected onTouchMove(evt: egret.TouchEvent): void {
 		this.p2BoardBody.position[0] = evt.stageX;
 		console.log(evt.stageX);
 		// this.p2board.x = evt.stageX;
@@ -215,56 +250,13 @@ class PingPong extends eui.Component implements  eui.UIComponent {
 	}
 
 
-	protected running():void // 一直跑一直跑
-	{
-		// Ball
-		// if (true) {
-		// 	this.ball.x += this.ball.vx;
-		// 	this.ball.y += this.ball.vy;
+	// 一直跑一直跑
+	protected running(): void {
+		this.world.step(1 / 15); // 先暫時用 1/60 吧，我猜大概是要用 deltaTime
 
-		// 	// 邊界
-		// 	if (this.ball.x + this.ball.radius >= this.width)
-		// 	{
-		// 		this.ball.x = this.width - this.ball.radius;
-		// 		this.ball.vx *= -1;
-		// 	}
-		// 	else if (this.ball.x - this.ball.radius <= 0)
-		// 	{
-		// 		this.ball.x = 0 + this.ball.radius;
-		// 		this.ball.vx *= -1;
-		// 	}
-		// 	if (this.ball.y + this.ball.radius >= this.height)
-		// 	{
-		// 		this.ball.y = this.height - this.ball.radius;
-		// 		this.ball.vy *= -1;
-		// 	}
-		// 	else if (this.ball.y - this.ball.radius <= 0)
-		// 	{
-		// 		this.ball.y = 0 + this.ball.radius;
-		// 		this.ball.vy *= -1;
-		// 	}
+		// Sync Egret rendering and p2.js calculated values
 
-		// 	// 障礙物 (之後想改成矩陣，加一堆障礙物，在更之後就去找 Box2d 或其他現成物裡解決方案)
-		// 	const BOARD_LEFT  = this.board.x - this.board.width / 2;
-		// 	const BOARD_RIGHT = this.board.x + this.board.width / 2;
-		// 	const BOARD_UP    = this.board.y - this.board.height / 2;
-		// 	const BOARD_DOWN  = this.board.y + this.board.height / 2;
-		// 	if (this.ball.x + (this.ball.radius / 2) >= BOARD_LEFT
-		// 	 && this.ball.x - (this.ball.radius / 2) <= BOARD_RIGHT
-		// 	 && this.ball.y + (this.ball.radius / 2) >= BOARD_UP
-		// 	 && this.ball.y - (this.ball.radius / 2) <= BOARD_DOWN)
-		// 	{
-		// 		this.ball.alpha = 0.5;
 
-		// 		// 側面碰撞不做了，去找物理引擎吧
-		// 		if (this.ball.x >= this.board.x - this.board.width / 2 && this.ball.x <= this.board.x + this.board.width / 2)
-		// 			this.ball.vy *= -1;
-		// 	}
-		// 	else
-		// 		this.ball.alpha = 1;
-		// }
-
-		this.world.step(1/15); // 先暫時用 1/60 吧，我猜大概是要用 deltaTime
 
 		// 球
 		this.ball.x = this.p2BallBody.position[0];
@@ -274,8 +266,31 @@ class PingPong extends eui.Component implements  eui.UIComponent {
 		this.board.x = this.p2BoardBody.position[0];
 		this.board.y = this.p2BoardBody.position[1];
 
-		this.bottomWall.x = this.p2BottomWallBody.position[0];
-		this.bottomWall.y = this.p2BottomWallBody.position[1];
+		// 方塊
+		for (let i: number = 0; i < this.blocks.length; i++) {
+			let box = (this.p2BlockBodies[i].shapes[0] as p2.Box);
+
+			// 這些東西如果不會一直變，就不用一直做了。如果位置不會變，應該也不用一直做。
+			// this.blocks[i].rect.width = box.width;
+			// this.blocks[i].rect.height = box.height;
+			// this.blocks[i].anchorOffsetX = this.blocks[i].width / 2;
+			// this.blocks[i].anchorOffsetY = this.blocks[i].height / 2;
+
+			this.blocks[i].x = this.p2BlockBodies[i].position[0];
+			this.blocks[i].y = this.p2BlockBodies[i].position[1];
+		}
+
+		// export class Shape {
+
+		//     static idCounter: number;
+		//     static CIRCLE: number;
+		//     static PARTICLE: number;
+		//     static PLANE: number;
+		//     static CONVEX: number;
+		//     static LINE: number;
+		//     static BOX: number;
+		//     static CAPSULE: number;
+		//     static HEIGHTFIELD: number;
 	}
-	
+
 }
