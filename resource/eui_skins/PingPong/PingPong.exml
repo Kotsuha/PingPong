@@ -9,6 +9,7 @@
 	<ns1:Wall id="leftWall" width="10" height="480" anchorOffsetX="5" anchorOffsetY="240" x="5" y="250"/>
 	<ns1:Wall id="topWall" width="480" height="10" anchorOffsetY="5" anchorOffsetX="240" x="250" y="5"/>
 	<e:Group id="blockGroup" horizontalCenter="0" verticalCenter="0" top="0" left="0" right="0" bottom="0">
+		<ns1:Block width="200" height="40" x="290" y="230" anchorOffsetX="100" anchorOffsetY="20" rotation="45"/>
 		<ns1:Block width="200" height="40" x="150" y="100" anchorOffsetX="100" anchorOffsetY="20"/>
 		<ns1:Block width="200" height="40" x="300" y="140" anchorOffsetX="100" anchorOffsetY="20"/>
 		<ns1:Block width="200" height="40" x="240" y="180" anchorOffsetX="100" anchorOffsetY="20"/>

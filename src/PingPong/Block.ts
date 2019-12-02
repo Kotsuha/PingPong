@@ -5,6 +5,11 @@ class Block extends eui.Component implements  eui.UIComponent {
 	 */
 	public rect: eui.Rect;
 
+	/**
+	 * 要打幾下才會消失
+	 */
+	public life: number = 1;
+
 	public constructor() {
 		super();
 	}

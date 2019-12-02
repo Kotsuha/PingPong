@@ -65,6 +65,15 @@ class PingPong extends eui.Component implements eui.UIComponent {
 	}
 
 
+	public ConvertDegreeToRadian(degree: number): number {
+		// return (((Math.PI / 2) / 90) * degree);
+		return degree * Math.PI / 180;
+	}
+	public ConvertRadianToDegree(radian: number): number {
+		return radian * 180 / Math.PI;
+	}
+
+
 	protected init_p2(): void {
 
 		// Create p2 world
@@ -227,25 +236,37 @@ class PingPong extends eui.Component implements eui.UIComponent {
 
 				let block = this.blockGroup.$children[i] as Block;
 				this.blocks.push(block);
+				block.life = 10;
 
 				const x = block.x;
 				const y = block.y;
 				const w = block.rect.width;
 				const h = block.rect.height;
+				const rDegree = block.rotation;
 
 				let p2BlockBody = new p2.Body({
 					mass: 1,
-					position: [x, y]
+					position: [x, y],
+					angle: this.ConvertDegreeToRadian(rDegree)
 				});
-				p2BlockBody.type = p2.Body.STATIC;
+				p2BlockBody.type = p2.Body.STATIC; // 好像一旦指定過 STATIC 就不能改成 DYNAMIC 了
 				let p2BlockShape = new p2.Box({
 					width: w,
-					height: h
+					height: h,
 				});
 				p2BlockShape.material = this.genericMaterial;
 				p2BlockBody.addShape(p2BlockShape);
-				this.world.addBody(p2BlockBody);
+
+				// 正在做實驗的特例方塊
+				// if (false && i == 0 || i == 2 || i == 3 || i == 4) {
+				// 	block.life = 10;
+				// 	p2BlockBody.type = p2.Body.DYNAMIC;
+				// 	// p2BlockBody.angularVelocity = 30;
+				// }
+				// else
+
 				this.p2BlockBodies.push(p2BlockBody);
+				this.world.addBody(p2BlockBody);
 			}
 		}
 	}
@@ -272,13 +293,17 @@ class PingPong extends eui.Component implements eui.UIComponent {
 	protected running(): void {
 		this.world.step(1 / 15); // 先暫時用 1/60 吧，我猜大概是要用 deltaTime
 
+		// 移除東西的程式碼現在分散在好幾塊，這是其中一塊
 		if (this.concatBodies.length > 0) {
 			this.concatBodies.forEach((body: p2.Body) => {
-				this.world.removeBody(body); // 移除了以後它就不再受物理影響了
 
 				let index = this.p2BlockBodies.indexOf(body);
 				if (index != -1) {
-					this.p2BlockBodies[index] = null;
+					this.blocks[index].life--;
+					if (this.blocks[index].life <= 0) {
+						this.world.removeBody(body); // 移除了以後它就不再受物理影響了
+						this.p2BlockBodies[index] = null;
+					}
 				}
 			});
 		}
@@ -297,6 +322,8 @@ class PingPong extends eui.Component implements eui.UIComponent {
 
 		// 方塊
 		for (let i: number = 0; i < this.blocks.length; i++) {
+
+			// 移除東西的程式碼現在分散在好幾塊，這是其中一塊
 			if (this.p2BlockBodies[i] == null) {
 				if (this.blocks[i] != null) {
 					this.blocks[i].visible = false;
@@ -310,6 +337,7 @@ class PingPong extends eui.Component implements eui.UIComponent {
 
 			this.blocks[i].x = this.p2BlockBodies[i].position[0];
 			this.blocks[i].y = this.p2BlockBodies[i].position[1];
+			this.blocks[i].rotation = this.ConvertRadianToDegree(this.p2BlockBodies[i].angle);
 		}
 
 		// export class Shape {
