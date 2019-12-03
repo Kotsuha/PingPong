@@ -106,7 +106,7 @@ class PingPong extends eui.Component implements eui.UIComponent {
 		{
 			this.genericMaterial = new p2.Material();
 			this.genericContactMaterial = new p2.ContactMaterial(this.genericMaterial, this.genericMaterial, {
-				// friction: 0, // 好像還是要有摩擦力，這樣才可以甩板子改變球的移動方向
+				friction: 0, // 好像還是要有摩擦力，這樣才可以甩板子改變球的移動方向
 				restitution: 1, // 歸還? 要讓碰撞以後的速度完全不減直接歸還，設 1
 			});
 			this.world.addContactMaterial(this.genericContactMaterial);
@@ -249,21 +249,20 @@ class PingPong extends eui.Component implements eui.UIComponent {
 					position: [x, y],
 					angle: this.ConvertDegreeToRadian(rDegree)
 				});
-				p2BlockBody.type = p2.Body.STATIC; // 好像一旦指定過 STATIC 就不能改成 DYNAMIC 了
+
+				if (i == 0 || i == 2 || i == 3 || i == 4) { // 正在做實驗的特例方塊
+					p2BlockBody.type = p2.Body.DYNAMIC;
+					// p2BlockBody.angularVelocity = 30;
+				}
+				else
+					p2BlockBody.type = p2.Body.STATIC; // 好像一旦指定過 STATIC 就不能改成 DYNAMIC 了，什麼翔
+
 				let p2BlockShape = new p2.Box({
 					width: w,
 					height: h,
 				});
 				p2BlockShape.material = this.genericMaterial;
 				p2BlockBody.addShape(p2BlockShape);
-
-				// 正在做實驗的特例方塊
-				// if (false && i == 0 || i == 2 || i == 3 || i == 4) {
-				// 	block.life = 10;
-				// 	p2BlockBody.type = p2.Body.DYNAMIC;
-				// 	// p2BlockBody.angularVelocity = 30;
-				// }
-				// else
 
 				this.p2BlockBodies.push(p2BlockBody);
 				this.world.addBody(p2BlockBody);
