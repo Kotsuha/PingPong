@@ -115,7 +115,7 @@ class PingPong extends eui.Component implements eui.UIComponent {
 		// Create a ball
 		{
 			this.p2BallBody = new p2.Body({
-				mass: 1,
+				mass: 10,
 				position: [this.ball.x, this.ball.y],
 				angularVelocity: 0, // 0.1
 				velocity: [0, 100]
@@ -250,12 +250,12 @@ class PingPong extends eui.Component implements eui.UIComponent {
 					angle: this.ConvertDegreeToRadian(rDegree)
 				});
 
-				if (i == 0 || i == 2 || i == 3 || i == 4) { // 正在做實驗的特例方塊
+				if (true || i == 0 || i == 2 || i == 3 || i == 4) { // 正在做實驗的特例方塊
 					p2BlockBody.type = p2.Body.DYNAMIC;
 					// p2BlockBody.angularVelocity = 30;
 				}
-				else
-					p2BlockBody.type = p2.Body.STATIC; // 好像一旦指定過 STATIC 就不能改成 DYNAMIC 了，什麼翔
+				// else
+				// 	p2BlockBody.type = p2.Body.STATIC; // 好像一旦指定過 STATIC 就不能改成 DYNAMIC 了，什麼翔
 
 				let p2BlockShape = new p2.Box({
 					width: w,
